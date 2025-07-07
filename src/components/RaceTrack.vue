@@ -140,6 +140,21 @@ export default {
       const horses = currentHorses.value;
       const duration = 4000; // 4 seconds total
 
+      // Calculate real race results first (same logic as store)
+      const raceResults = [...horses].sort((a, b) => {
+        const aScore = a.condition * (0.7 + Math.random() * 0.6);
+        const bScore = b.condition * (0.7 + Math.random() * 0.6);
+        return bScore - aScore;
+      });
+
+      // Create position mapping based on race results
+      const finalPositions = {};
+      raceResults.forEach((horse, index) => {
+        // Winner gets 95%, others get proportionally less
+        const positionPercent = 95 - (index * 8); // 95%, 87%, 79%, etc.
+        finalPositions[horse.id] = Math.max(positionPercent, 10);
+      });
+
       const animate = () => {
         if (
           !animationState.value.isAnimating ||
@@ -156,13 +171,19 @@ export default {
         const progress = Math.min(elapsed / duration, 1);
 
         horses.forEach((horse) => {
-          const speed = animationState.value.horseSpeeds[horse.id];
-          let position = progress * speed * 95;
+          const targetPosition = finalPositions[horse.id];
+          let position = progress * targetPosition;
 
-          // Final stretch boost
+          // Add some dynamic movement during the race
+          if (progress < 0.9) {
+            const dynamicVariation = Math.sin(elapsed * 0.01 + horse.id) * 3;
+            position += dynamicVariation * (1 - progress);
+          }
+
+          // Final stretch - smooth to exact final position
           if (progress > 0.8) {
-            const finalBoost = Math.sin((progress - 0.8) * Math.PI * 5) * 2;
-            position += finalBoost * (horse.condition / 100);
+            const finalProgress = (progress - 0.8) / 0.2;
+            position = position * (1 - finalProgress) + targetPosition * finalProgress;
           }
 
           position = Math.min(Math.max(position, 0), 95);
@@ -177,8 +198,8 @@ export default {
           requestAnimationFrame(animate);
         } else if (progress >= 1) {
           animationState.value.isAnimating = false;
-          // Notify store that animation is complete
-          store.dispatch("raceAnimationComplete");
+          // Send the calculated results to store
+          store.dispatch("raceAnimationComplete", raceResults);
         }
       };
 

@@ -40,56 +40,34 @@ export default {
       store.commit("generateHorses");
       store.commit("generateProgram");
       store.commit("resetGame");
-    };
+    }
 
     const toggleRace = () => {
-      if (raceState.value === "running") {
-        store.dispatch("pauseRace");
-      } else if (raceState.value === "paused") {
-        store.dispatch("resumeRace");
-      } else if (raceState.value === "idle" || raceState.value === "finished") {
-        store.dispatch("startRace");
-      }
-    };
+      if (raceState.value === "running") return store.dispatch("pauseRace");
+      if (raceState.value === "paused") return store.dispatch("resumeRace");
+      if (raceState.value === "idle" || raceState.value === "finished") return store.dispatch("startRace");
+    }
 
     const getButtonText = () => {
-      switch (raceState.value) {
-        case "running":
-          return "⏸️ Pause Race";
-        case "paused":
-          return "▶️ Resume Race";
-        case "finished":
-          return "🏁 Race Finished";
-        default:
-          return "🏁 Start Race";
-      }
-    };
+      if (raceState.value === "running") return "⏸️ Pause Race";
+      if (raceState.value === "paused") return "▶️ Resume Race";
+      if (raceState.value === "finished") return "🏁 Race Finished";
+      return "🏁 Start Race";
+    }
 
     const getButtonClass = () => {
-      switch (raceState.value) {
-        case "running":
-          return "warning";
-        case "paused":
-          return "success";
-        case "finished":
-          return "info";
-        default:
-          return "success";
-      }
-    };
+      if (raceState.value === "running") return "warning";
+      if (raceState.value === "paused") return "success";
+      if (raceState.value === "finished") return "info";
+      return "success";
+    }
 
     const getRaceStatus = () => {
-      switch (raceState.value) {
-        case "running":
-          return "Racing";
-        case "paused":
-          return "Paused";
-        case "finished":
-          return "Completed";
-        default:
-          return "Ready";
-      }
-    };
+      if (raceState.value === "running") return "Racing";
+      if (raceState.value === "paused") return "Paused";
+      if (raceState.value === "finished") return "Completed";
+      return "Ready";
+    }
 
     return {
       generate,

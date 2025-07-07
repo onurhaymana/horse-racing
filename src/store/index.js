@@ -87,23 +87,17 @@ export default createStore({
       while (state.currentRound < state.program.length && state.raceState === 'running') {
         const round = state.program[state.currentRound]
 
-        // Wait for the race animation to complete
-        await new Promise(resolve => {
+        // Wait for the race animation to complete and get results
+        const raceResults = await new Promise(resolve => {
           commit('setAnimationPromiseResolve', resolve)
         })
 
         if (state.raceState !== 'running') break
 
-        // Calculate race results based on horse condition and some randomness
-        const result = [...round.horses].sort((a, b) => {
-          const aScore = a.condition * (0.7 + Math.random() * 0.6) // 70-130% of condition
-          const bScore = b.condition * (0.7 + Math.random() * 0.6)
-          return bScore - aScore
-        })
-
+        // Use the results from the animation
         commit('addResult', {
           distance: round.distance,
-          positions: result
+          positions: raceResults
         })
 
         commit('nextRound')
@@ -118,7 +112,11 @@ export default createStore({
         commit('setRaceState', 'finished')
       }
     },
-    raceAnimationComplete({ commit }) {
+    raceAnimationComplete({ commit, state }, raceResults) {
+      // Return the results to the waiting promise
+      if (state.animationPromiseResolve) {
+        state.animationPromiseResolve(raceResults)
+      }
       commit('setAnimationComplete')
     },
     pauseRace({ commit }) {

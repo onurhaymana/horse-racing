@@ -1,22 +1,26 @@
 <template>
-  <h1>🏇 Horse Racing Game</h1>
-  <RaceControls />
-  <div class="layout">
-    <HorseList />
-    <div class="right-panel">///Right panel coming</div>
-  </div>
+    <h1>🏇 Horse Racing Game</h1>
+    <RaceControls />
+    <div class="layout">
+      <HorseList />
+      <div class="right-panel">
+      <Program />
+      </div>
+    </div>
 </template>
 
 <script>
-import HorseList from "./components/HorseList.vue";
+import HorseList from './components/HorseList.vue'
+import Program from './components/Program.vue'
 import RaceControls from './components/RaceControls.vue'
 
 export default {
   components: {
     HorseList,
+    Program,
     RaceControls
   },
-};
+}
 </script>
 
 <style lang="scss">
@@ -25,8 +29,7 @@ export default {
 }
 
 body {
-  font-family: Figtree, Arial, sans-serif, apple color emoji, segoe ui emoji,
-    segoe ui symbol, noto color emoji;
+  font-family: Figtree, Arial, sans-serif, apple color emoji, segoe ui emoji, segoe ui symbol, noto color emoji;
   margin: 0;
   padding: 20px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -53,6 +56,21 @@ body {
     display: flex;
     gap: 1.5rem;
     min-height: 500px;
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 300px;
+
+      @media (max-width: 1200px) {
+        width: 100%;
+        flex-direction: row;
+      }
+      @media (max-width: 768px) {
+        flex-direction: column;
+      }
+    }
 
     .center-results {
       flex: 1;

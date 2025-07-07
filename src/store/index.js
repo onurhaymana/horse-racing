@@ -22,6 +22,7 @@ export default createStore({
   state: {
     horses: [],
     program: [],
+    results: [],
     currentRound: 0,
     raceState: 'idle', // idle | running | paused | finished
     animationComplete: false,
@@ -45,8 +46,12 @@ export default createStore({
           horses: shuffled.slice(0, 10)
         }
       })
+      state.results = []
       state.currentRound = 0
       state.raceState = 'idle'
+    },
+    addResult(state, result) {
+      state.results.push(result)
     },
     setRaceState(state, val) {
       state.raceState = val
@@ -55,6 +60,7 @@ export default createStore({
       state.currentRound++
     },
     resetGame(state) {
+      state.results = []
       state.currentRound = 0
       state.raceState = 'idle'
       state.animationComplete = false
@@ -87,6 +93,18 @@ export default createStore({
         })
 
         if (state.raceState !== 'running') break
+
+        // Calculate race results based on horse condition and some randomness
+        const result = [...round.horses].sort((a, b) => {
+          const aScore = a.condition * (0.7 + Math.random() * 0.6) // 70-130% of condition
+          const bScore = b.condition * (0.7 + Math.random() * 0.6)
+          return bScore - aScore
+        })
+
+        commit('addResult', {
+          distance: round.distance,
+          positions: result
+        })
 
         commit('nextRound')
 

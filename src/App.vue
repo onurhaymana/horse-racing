@@ -6,8 +6,10 @@
       <RaceTrack
         v-if="raceState === 'running' || raceState === 'idle' || raceState === 'paused'"
       />
+      <Results v-else-if="raceState === 'finished'" class="center-results" />
       <div class="right-panel">
-      <Program />
+        <Program />
+        <Results v-if="raceState !== 'finished'" />
       </div>
     </div>
 </template>
@@ -18,6 +20,7 @@ import { useStore } from 'vuex'
 import HorseList from './components/HorseList.vue'
 import RaceTrack from './components/RaceTrack.vue'
 import Program from './components/Program.vue'
+import Results from './components/Results.vue'
 import RaceControls from './components/RaceControls.vue'
 
 export default {
@@ -25,6 +28,7 @@ export default {
     HorseList,
     RaceTrack,
     Program,
+    Results,
     RaceControls
   },
   setup() {

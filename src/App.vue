@@ -3,6 +3,9 @@
     <RaceControls />
     <div class="layout">
       <HorseList />
+      <RaceTrack
+        v-if="raceState === 'running' || raceState === 'idle' || raceState === 'paused'"
+      />
       <div class="right-panel">
       <Program />
       </div>
@@ -10,16 +13,26 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import HorseList from './components/HorseList.vue'
+import RaceTrack from './components/RaceTrack.vue'
 import Program from './components/Program.vue'
 import RaceControls from './components/RaceControls.vue'
 
 export default {
   components: {
     HorseList,
+    RaceTrack,
     Program,
     RaceControls
   },
+  setup() {
+    const store = useStore()
+    const raceState = computed(() => store.state.raceState)
+
+    return { raceState }
+  }
 }
 </script>
 

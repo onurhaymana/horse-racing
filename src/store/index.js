@@ -22,6 +22,10 @@ export default createStore({
   state: {
     horses: [],
     program: [],
+    currentRound: 0,
+    raceState: 'idle', // idle | running | paused | finished
+    animationComplete: false,
+    animationPromiseResolve: null,
   },
   mutations: {
     generateHorses(state) {
@@ -41,6 +45,71 @@ export default createStore({
           horses: shuffled.slice(0, 10)
         }
       })
+      state.currentRound = 0
+      state.raceState = 'idle'
     },
+    setRaceState(state, val) {
+      state.raceState = val
+    },
+    nextRound(state) {
+      state.currentRound++
+    },
+    resetGame(state) {
+      state.currentRound = 0
+      state.raceState = 'idle'
+      state.animationComplete = false
+      state.animationPromiseResolve = null
+    },
+    setAnimationComplete(state) {
+      state.animationComplete = true
+      if (state.animationPromiseResolve) {
+        state.animationPromiseResolve()
+        state.animationPromiseResolve = null
+      }
+    },
+    setAnimationPromiseResolve(state, resolve) {
+      state.animationPromiseResolve = resolve
+      state.animationComplete = false
+    }
   },
+  actions: {
+    async startRace({ commit, state, dispatch }) {
+      if (state.program.length === 0) return
+
+      commit('setRaceState', 'running')
+
+      while (state.currentRound < state.program.length && state.raceState === 'running') {
+        const round = state.program[state.currentRound]
+
+        // Wait for the race animation to complete
+        await new Promise(resolve => {
+          commit('setAnimationPromiseResolve', resolve)
+        })
+
+        if (state.raceState !== 'running') break
+
+        commit('nextRound')
+
+        // Small delay before next round
+        if (state.currentRound < state.program.length) {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        }
+      }
+
+      if (state.raceState === 'running') {
+        commit('setRaceState', 'finished')
+      }
+    },
+    raceAnimationComplete({ commit }) {
+      commit('setAnimationComplete')
+    },
+    pauseRace({ commit }) {
+      commit('setRaceState', 'paused')
+    },
+    async resumeRace({ dispatch, state }) {
+      if (state.raceState === 'paused') {
+        await dispatch('startRace')
+      }
+    }
+  }
 })

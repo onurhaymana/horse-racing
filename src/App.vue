@@ -99,7 +99,6 @@ body {
 
     .center-results {
       flex: 1;
-      margin-right: 1.5rem;
     }
 
     @media (max-width: 1200px) {

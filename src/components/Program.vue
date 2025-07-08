@@ -66,7 +66,7 @@ export default {
 .program {
   background: #f8f9fa;
   border-radius: 8px;
-  padding: 15px;
+  padding: 7px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   flex: 1;
 

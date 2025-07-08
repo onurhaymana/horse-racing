@@ -1,6 +1,7 @@
 <template>
   <div class="track">
     <div class="header">
+      <span class="status" v-if="raceState === 'idle' && program.length === 0">The race hasn't started yet</span>
       <h3 v-if="currentRound < program.length">
         Round {{ currentRound + 1 }} - {{ program[currentRound]?.distance }}m
       </h3>

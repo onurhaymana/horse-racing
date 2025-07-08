@@ -1,7 +1,8 @@
 <template>
   <div class="horse-list">
     <h3>🐎 Horse Roster (1-20)</h3>
-    <div class="list-container">
+    <span v-if="horses.length === 0" class="no-horses">Horses are being prepared...</span>
+    <div v-else class="list-container">
       <div class="list-header">
         <div class="header-cell name-header">Name</div>
         <div class="header-cell condition-header">Condition</div>
@@ -66,6 +67,15 @@ export default {
     text-align: center;
     border-bottom: 2px solid #ddd;
     padding-bottom: 10px;
+  }
+
+  .no-horses {
+    display: block;
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+    font-style: italic;
+    font-size: 16px;
   }
 
   .list-container {

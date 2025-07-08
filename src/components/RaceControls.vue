@@ -85,6 +85,9 @@ export default {
 
 <style lang="scss" scoped>
 .controls {
+  position: sticky;
+  top: 1rem;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 15px;

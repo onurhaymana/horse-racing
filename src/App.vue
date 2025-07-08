@@ -4,12 +4,20 @@
     <div class="layout">
       <HorseList />
       <RaceTrack
+        data-testid="race-track"
         v-if="raceState === 'running' || raceState === 'idle' || raceState === 'paused'"
       />
-      <Results v-else-if="raceState === 'finished'" class="center-results" />
+      <Results 
+        v-else-if="raceState === 'finished'" 
+        class="center-results" 
+        data-testid="results"
+      />
       <div class="right-panel">
         <Program />
-        <Results v-if="raceState !== 'finished'" />
+        <Results 
+          v-if="raceState !== 'finished'" 
+          data-testid="results"
+        />
       </div>
     </div>
 </template>

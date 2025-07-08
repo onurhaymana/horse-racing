@@ -124,8 +124,9 @@ export default createStore({
     },
     async resumeRace({ dispatch, state }) {
       if (state.raceState === 'paused') {
-        await dispatch('startRace')
+        return await dispatch('startRace')
       }
+      return Promise.resolve()
     }
   }
 })
